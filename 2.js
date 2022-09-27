@@ -47,8 +47,14 @@ const rawProducts = require('./2-input')
 
 
 //You must complete out this function
-const calculateCartTotal = products => {
-    //your code here
+const calculateCartTotal = (products) => {
+  let total = 0;
+  products.map((item) => {
+    const amount = Number(item.price.replace('$', ''));
+    total += amount;
+  });
+
+  return `$${total.toFixed(2)}`;
 }
 
 const cartTotal = calculateCartTotal(rawProducts)
