@@ -68,9 +68,28 @@ You are to generate this category menu tree from the list of categories provided
         ... etc...
         - The last Id in the array is the ID of the immediate parent of the given category
 */
-
 //DO NOT modify this
-const input = require('./5-input')
+const input = require('./5-input');
+
+const getSubCategories = (parentId) => {
+    let subs = input.filter((a) => a.parentCategoryIds.includes(parentId));
+    return fillChildren(subs);
+};
+
+const fillChildren = (arr) => {
+    return arr.map((item) => {
+        return {
+            ...item,
+            subCategories: getSubCategories(item.id),
+        }
+    });
+};
+
+const parentCategories = input.filter((cat) => cat.parentCategoryIds.length === 0);
+let categoryMenuTree = fillChildren(parentCategories);
+
+console.log('categoryMenuTree ==>', categoryMenuTree);
+console.log('categoryMenuTree ==>', categoryMenuTree[2].subCategories);
 
 //Hint: The 'dyn_accessories' root category object tree should look like the following: 
 /*
