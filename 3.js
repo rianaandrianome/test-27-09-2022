@@ -28,7 +28,30 @@ const input = [
 6 * 4 = 24
 */
 
-//DO NOT modify this
-const input = require('./3-input')
 
+const findSecondLargest = (parentArray) => {
+    const arraySums = parentArray.map((subArray) => {
+        const subSum = subArray.reduce((sum, item) => sum + item, 0);
+        const maxValue = subArray.reduce((max, value) => Math.max(max, value), subArray[0]);
+        return {
+            sum: subSum,
+            maxValue,
+        }
+    });
+
+    const arrayOrderedSums = arraySums.sort((a, b) => a.sum > b.sum ? 1 : -1);
+    return {
+        secondSmallest: arrayOrderedSums[1],
+        secondLargest: arrayOrderedSums[arrayOrderedSums.length - 2]
+    };
+}
+  
+//DO NOT modify this
+const input = require('./3-input');
+
+const result = findSecondLargest(input)
+
+console.log(`2nd largest sum is ${result.secondLargest.sum} and the largest value from this sub-array is ${result.secondLargest.maxValue}`)
+console.log(`2nd smallest sum is ${result.secondSmallest.sum} and the largest value from this sub-array is ${result.secondSmallest.maxValue}`);
+console.log(`the final multiplication is: ${result.secondLargest.maxValue} * ${result.secondSmallest.maxValue} =  ${result.secondLargest.maxValue * result.secondSmallest.maxValue}`);
 //Hint, the final multiplication is: 933 * 438 =  408654
