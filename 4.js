@@ -21,7 +21,46 @@ Because:
 etc.
 */
 
+const countChars = (sortedInput) => {
+  const result = [];
+  
+  sortedInput.split('').map((char) => {
+    if (result.length === 0) {
+      result.push({
+        value: char,
+        count: 1,
+      });
+
+    } else {
+
+      const indexOfItem = result.findIndex((item) => item.value === char);
+
+      if (indexOfItem !== -1) {
+
+        result[indexOfItem] = {
+          ...result[indexOfItem],
+          count: result[indexOfItem].count + 1,
+        }
+
+      } else {
+        result.push({
+          value: char,
+          count: 1,
+        });
+      }
+    }
+  });
+
+  const arrCounts = result.map((c) => c.count);
+
+  return arrCounts.join();
+}
+
 //DO NOT modify this
 const input = require('./4-input')
+
+const sortedInput = input.split('').sort().join('');
+
+console.log('output ===>', countChars(sortedInput))
 
 //Hint: the final answer should be: '147,295,263,284,244,266,238,288,281,138,48,111,103,100,104,92,80,112,102,99,114,98,104,113,101,84,92,101,116,95,127,100,117,100,93'
