@@ -64,4 +64,62 @@ const formattedProducts = [
 */
 
 //DO NOT modify this
-const input = require('./6-input')
+const input = require('./6-input');
+
+const getFileSizesInfos = (product) => {
+    const arrUniqueImgs = [];
+
+    product.imageUrls.map((imgUrl) => {
+        const fileName = imgUrl.replace('https://myCdn.com/', '').replace('.png', '');
+        const productId = fileName.split('_')[0];
+        const index = fileName.split('_')[1];
+        const size = fileName.split('_')[2];
+
+        const fileReference = `${productId}_${index}`;
+
+        const objectIndex = arrUniqueImgs.findIndex((f) => f.file === fileReference);
+        
+        if (arrUniqueImgs.length === 0 || objectIndex === -1) {
+            arrUniqueImgs.push({
+                file: fileReference,
+                sizes: [size],
+                srcsetString: `${imgUrl} ${size.split('x')[0]}w`
+            });
+        } else {
+            let tmpSizes = arrUniqueImgs[objectIndex].sizes;
+            
+            arrUniqueImgs[objectIndex] = {
+                ...arrUniqueImgs[objectIndex],
+                sizes: tmpSizes.concat([size]),
+                srcsetString: `${arrUniqueImgs[objectIndex].srcsetString}, ${imgUrl} ${size.split('x')[0]}w`
+            }
+
+        }
+    });
+
+    return arrUniqueImgs;
+};
+
+const result = input.map((p) => {
+    const fileSizeInfos = getFileSizesInfos(p);
+
+    const srcsetList = [];
+    const srcList = [];
+
+    fileSizeInfos.map((info, index) => {
+        srcsetList[index] = info.srcsetString;
+        const sizes = info.sizes.map((s) => Number(s.split('x')[0])).sort((a, b) => a.sum > b.sum ? 1 : -1);
+
+        const maxSize = sizes.reduce((max, value) => Math.max(max, value), sizes[0]);
+        const strSizeMax = info.sizes.filter((s) => String(s).startsWith(`${maxSize}x`))[0];
+        srcList.push(`https://myCdn.com/${info.file}_${strSizeMax}.png`);
+    });
+
+    return {
+        ...p,
+        srcset: srcsetList,
+        src: srcList,
+    };
+});
+
+console.log(result);
